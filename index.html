@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="중학교 2학년 과학 마찰 전기·전기력·검전기 모의실험과 확인 퀴즈">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}</style>
+<title>찌릿찌릿 정전기 실험실</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap">
+<style>
+/* Layout: 모눈 실험 노트 위에 놓인 실험대. 왼쪽은 실험 화면(캔버스), 오른쪽은 관찰 노트. 좁은 화면에서는 위아래로 쌓임 */
+:root{
+  --paper:#F3F6FC; --grid:#E2E9F5; --card:#FFFFFF; --ink:#1E2A47; --ink-soft:#5A6684; --line:#D4DCEB;
+  --pos:#E04A58; --pos-soft:#FDE4E6; --pos-line:#F6B5BC;
+  --neg:#2F6BE6; --neg-soft:#E2ECFF; --neg-line:#B3CBFA;
+  --spark:#FFC531; --spark-deep:#D9A10C; --ok:#1E9E68; --ok-soft:#DDF4E9; --ok-line:#A6DEC3;
+  --display:'Jua','Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  --body:'Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  color-scheme: light;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+  color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px 44px; margin:0;
+}
+.wrap{max-width:1180px; margin:0 auto; display:flex; flex-direction:column; gap:18px}
+
+/* 머리말 */
+.hero{display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+.mascot{width:92px; height:92px; flex:none; animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
+.hero-text{flex:1 1 320px; min-width:0}
+.eyebrow{font-family:var(--display); font-size:14px; letter-spacing:.08em; color:var(--neg)}
+h1{font-family:var(--display); font-weight:400; font-size:clamp(30px,4.6vw,46px); line-height:1.12; margin:2px 0 6px; text-wrap:balance}
+h1 .zz{color:var(--neg)}
+.hero p{margin:0; color:var(--ink-soft); max-width:62ch}
+.bubble{position:relative; background:var(--card); border:2px solid var(--line); border-radius:16px; padding:10px 14px; font-size:15px; max-width:330px; flex:0 1 330px}
+.bubble::before{content:""; position:absolute; left:-10px; top:22px; width:16px; height:16px; background:var(--card); border-left:2px solid var(--line); border-bottom:2px solid var(--line); transform:rotate(45deg)}
+.bubble b{font-family:var(--display); font-weight:400; color:var(--neg)}
+@media (max-width:720px){.bubble{flex-basis:100%; max-width:none}.bubble::before{display:none}.mascot{width:64px;height:64px}.hero-text{flex-basis:200px}}
+
+/* 탭 */
+.tabs{display:flex; gap:8px; flex-wrap:wrap}
+.tab{font-family:var(--display); font-size:17px; border:2px solid var(--line); background:var(--card); color:var(--ink);
+  padding:8px 16px 8px 10px; border-radius:999px; cursor:pointer; display:flex; align-items:center; gap:8px}
+.tab .num{display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--grid); font-size:14px}
+.tab[aria-selected="true"]{background:var(--ink); color:#fff; border-color:var(--ink)}
+.tab[aria-selected="true"] .num{background:var(--spark); color:var(--ink)}
+button:focus-visible,select:focus-visible,canvas:focus-visible,input:focus-visible{outline:3px solid var(--spark); outline-offset:2px}
+
+/* 실험대 */
+.bench{display:grid; grid-template-columns:minmax(0,1.65fr) minmax(0,1fr); gap:16px; align-items:start}
+@media (max-width:880px){.bench{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--card); border:2px solid var(--line); border-radius:22px; padding:10px; box-shadow:0 6px 0 var(--line); min-width:0}
+.stage canvas{display:block; width:100%; max-width:100%; aspect-ratio:8/5; border-radius:15px; touch-action:none; cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.stage-cap{display:flex; justify-content:space-between; align-items:center; gap:8px 14px; flex-wrap:wrap; padding:10px 6px 2px; font-size:14.5px; color:var(--ink-soft)}
+.stage-cap .btns{margin-left:auto}
+.notes{display:flex; flex-direction:column; gap:14px; min-width:0}
+.box{background:var(--card); border:2px solid var(--line); border-radius:18px; padding:14px 16px; min-width:0}
+.box h3{font-family:var(--display); font-weight:400; font-size:18px; margin:0 0 10px; display:flex; align-items:center; gap:8px}
+.box h3 .dot{width:10px; height:10px; border-radius:50%; background:var(--spark); box-shadow:0 0 0 3px #FFF0C2}
+.sub{font-size:13.5px; color:var(--ink-soft); margin:0 0 6px}
+
+.mats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px}
+.mats:last-child{margin-bottom:0}
+.mat{border:2px solid var(--line); background:var(--paper); border-radius:12px; padding:6px 4px 4px; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:0; font-family:var(--display); font-size:15px; color:var(--ink)}
+.mat canvas{width:64px; height:36px}
+.mat:hover{border-color:var(--neg-line)}
+.mat[aria-pressed="true"]{border-color:var(--neg); background:var(--neg-soft)}
+
+.btns{display:flex; gap:8px; flex-wrap:wrap}
+.btn{font-family:var(--display); font-size:16px; border:none; border-radius:12px; padding:9px 14px; cursor:pointer;
+  background:var(--ink); color:#fff; box-shadow:0 3px 0 #0E1630}
+.btn.alt{background:var(--card); color:var(--ink); border:2px solid var(--line); box-shadow:0 3px 0 var(--line); padding:7px 12px}
+.btn.sun{background:var(--spark); color:var(--ink); box-shadow:0 3px 0 var(--spark-deep)}
+.btn:active{transform:translateY(2px); box-shadow:none}
+.toggle{display:flex; align-items:center; gap:6px; font-size:14.5px; cursor:pointer; color:var(--ink)}
+.toggle input{width:18px; height:18px; accent-color:var(--neg)}
+
+.readouts{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:8px; margin-bottom:10px}
+.ro{border-radius:12px; padding:8px 10px; background:var(--paper); border:2px solid var(--line); min-width:0}
+.ro .k{font-size:13px; color:var(--ink-soft)}
+.ro .v{font-family:var(--display); font-size:21px; line-height:1.3}
+.ro .s{font-size:13px; color:var(--ink-soft)}
+.ro.pos{background:var(--pos-soft); border-color:var(--pos-line)} .ro.pos .v{color:var(--pos)}
+.ro.neg{background:var(--neg-soft); border-color:var(--neg-line)} .ro.neg .v{color:var(--neg)}
+.msg{margin:0; font-size:15.5px}
+.pos-t{color:var(--pos); font-weight:700} .neg-t{color:var(--neg); font-weight:700}
+.verdict{font-family:var(--display); font-size:20px; padding:8px 12px; border-radius:12px; margin-bottom:8px; background:var(--paper); border:2px solid var(--line)}
+.verdict.rep{background:var(--pos-soft); border-color:var(--pos-line); color:var(--pos)}
+.verdict.att{background:var(--ok-soft); border-color:var(--ok-line); color:var(--ok)}
+
+/* 대전열 */
+.series-wrap{overflow-x:auto; margin-top:12px}
+.series{display:flex; align-items:center; gap:4px; padding-top:22px; min-width:max-content}
+.series .end{font-family:var(--display); font-size:15px; padding:0 2px}
+.series .end.p{color:var(--pos)} .series .end.n{color:var(--neg)}
+.chip{position:relative; text-align:center; font-size:13.5px; padding:4px 8px; border-radius:10px; background:var(--paper); border:2px solid var(--line); white-space:nowrap}
+.chip.on{border-color:var(--ink); background:#FFF7DA}
+.chip .tag{position:absolute; top:-21px; left:50%; transform:translateX(-50%); font-family:var(--display); font-size:12px; background:var(--ink); color:#fff; border-radius:6px; padding:0 6px; line-height:18px}
+.series-grad{height:6px; border-radius:6px; margin-top:6px; background:linear-gradient(90deg,var(--pos-line),#EDEFF5,var(--neg-line))}
+.flow{font-size:14px; margin:8px 0 0; color:var(--ink-soft)}
+.flow b{font-family:var(--display); font-weight:400; color:var(--neg)}
+
+.setup{display:grid; gap:10px}
+.setup .row{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.setup label{display:flex; flex-direction:column; gap:2px; font-size:13px; color:var(--ink-soft); min-width:0}
+.setup select{font-family:var(--display); font-size:16px; color:var(--ink); padding:7px 8px; border-radius:10px; border:2px solid var(--line); background:var(--paper); min-width:0; width:100%}
+.setup .who{font-family:var(--display); font-size:16px; display:flex; align-items:center; gap:8px}
+.setup .who i{font-style:normal; display:inline-grid; place-items:center; min-width:28px; height:22px; border-radius:7px; font-size:13px; color:#fff; background:var(--ink-soft); padding:0 6px}
+
+.keys{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:6px; font-size:15px}
+.keys b{font-family:var(--display); font-weight:400; color:var(--neg)}
+
+/* 퀴즈 */
+.quiz{max-width:780px; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:14px}
+.qhead{display:flex; align-items:center; gap:12px; font-family:var(--display); font-size:16px}
+.qbar{flex:1; height:12px; border-radius:12px; background:var(--card); border:2px solid var(--line); overflow:hidden}
+.qbar i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--neg),#7FA8FF); border-radius:12px; transition:width .35s}
+.qcard{background:var(--card); border:2px solid var(--line); border-radius:22px; padding:22px; box-shadow:0 6px 0 var(--line)}
+.qno{font-family:var(--display); display:inline-block; background:var(--ink); color:#fff; border-radius:9px; padding:1px 10px; font-size:15px}
+.qtext{font-family:var(--display); font-weight:400; font-size:clamp(19px,2.6vw,23px); line-height:1.45; margin:10px 0 12px; text-wrap:balance}
+.qseries{font-size:14.5px; background:#FFF7DA; border:2px dashed #F2D27A; border-radius:12px; padding:6px 12px; margin-bottom:12px}
+.opts{display:grid; gap:8px}
+.opt{display:flex; align-items:flex-start; gap:10px; text-align:left; font-family:var(--body); font-size:16px; color:var(--ink);
+  background:var(--paper); border:2px solid var(--line); border-radius:14px; padding:10px 14px; cursor:pointer}
+.opt .lt{flex:none; display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--card); border:2px solid var(--line); font-family:var(--display); font-size:14px}
+.opt:hover:not(:disabled){border-color:var(--neg-line)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok-soft); border-color:var(--ok)} .opt.right .lt{background:var(--ok); color:#fff; border-color:var(--ok)}
+.opt.wrong{background:var(--pos-soft); border-color:var(--pos)} .opt.wrong .lt{background:var(--pos); color:#fff; border-color:var(--pos)}
+.fb{display:flex; gap:12px; align-items:flex-start; margin-top:14px; padding:12px 14px; border-radius:14px; background:var(--paper); border:2px solid var(--line)}
+.fb svg{width:46px; height:46px; flex:none}
+.fb .t{font-family:var(--display); font-size:18px}
+.fb.good .t{color:var(--ok)} .fb.bad .t{color:var(--pos)}
+.fb p{margin:2px 0 0; font-size:15px}
+.qnav{display:flex; justify-content:flex-end; margin-top:14px}
+.result{text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px}
+.result svg{width:110px; height:110px}
+.score{font-family:var(--display); font-size:54px; line-height:1}
+.score small{font-size:24px; color:var(--ink-soft)}
+.stars{font-size:30px; letter-spacing:4px; color:var(--spark); font-family:var(--display)}
+.stars .off{color:var(--line)}
+.review{text-align:left; width:100%; display:flex; flex-direction:column; gap:8px; margin-top:6px}
+.review div{background:var(--paper); border:2px solid var(--line); border-radius:12px; padding:8px 12px; font-size:15px}
+.review b{font-family:var(--display); font-weight:400; color:var(--ok)}
+
+footer{font-size:13.5px; color:var(--ink-soft); text-align:center; max-width:70ch; margin:6px auto 0}
+@media (prefers-reduced-motion:reduce){.mascot{animation:none}.qbar i{transition:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="eg" cx="36%" cy="30%" r="75%"><stop offset="0" stop-color="#B4D0FF"/><stop offset=".55" stop-color="#5C8EF5"/><stop offset="1" stop-color="#2556CC"/></radialGradient>
+    <symbol id="jjiri" viewBox="0 0 120 120">
+      <path d="M14 30 l10 6 -6 4 10 8" fill="none" stroke="#FFC531" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M104 22 l-9 8 7 3 -10 9" fill="none" stroke="#FFC531" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="104" cy="80" r="4" fill="#FFC531"/>
+      <ellipse cx="60" cy="108" rx="28" ry="5" fill="#1E2A47" opacity=".12"/>
+      <circle cx="60" cy="62" r="40" fill="url(#eg)"/>
+      <ellipse cx="45" cy="42" rx="11" ry="6.5" fill="#fff" opacity=".55" transform="rotate(-25 45 42)"/>
+      <ellipse cx="47" cy="62" rx="5.2" ry="6.8" fill="#14204A"/><circle cx="48.8" cy="59.6" r="1.9" fill="#fff"/>
+      <ellipse cx="73" cy="62" rx="5.2" ry="6.8" fill="#14204A"/><circle cx="74.8" cy="59.6" r="1.9" fill="#fff"/>
+      <ellipse cx="37" cy="74" rx="6.5" ry="3.8" fill="#FF8FA6" opacity=".75"/>
+      <ellipse cx="83" cy="74" rx="6.5" ry="3.8" fill="#FF8FA6" opacity=".75"/>
+      <path d="M53 77 h14" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="hero">
+    <svg class="mascot" role="img" aria-label="전자 캐릭터 찌릿이"><use href="#jjiri"/></svg>
+    <div class="hero-text">
+      <div class="eyebrow">중학교 2학년 과학 · 전기와 자기</div>
+      <h1>찌릿찌릿 <span class="zz">정전기</span> 실험실</h1>
+      <p>나무, 고무, 플라스틱, 유리, 명주, 털가죽을 직접 문질러 보고 전자가 어디로 이동하는지 관찰해요. 실험을 마치면 퀴즈로 확인해 봐요.</p>
+    </div>
+    <div class="bubble" id="tip">안녕! 나는 전자 <b>찌릿이</b>야. 두 물체를 문지르면 내가 옆 물체로 이사를 가. 누가 나를 데려가는지 지켜봐!</div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="실험 선택">
+    <button class="tab" role="tab" id="t-rub" aria-controls="rub" aria-selected="true"><span class="num">1</span>마찰 전기</button>
+    <button class="tab" role="tab" id="t-force" aria-controls="force" aria-selected="false"><span class="num">2</span>전기력</button>
+    <button class="tab" role="tab" id="t-scope" aria-controls="scope" aria-selected="false"><span class="num">3</span>정전기 유도와 검전기</button>
+    <button class="tab" role="tab" id="t-quiz" aria-controls="quiz" aria-selected="false"><span class="num">Q</span>확인 퀴즈</button>
+  </nav>
+
+  <!-- 실험 1 -->
+  <section id="rub" role="tabpanel" aria-labelledby="t-rub">
+    <div class="bench">
+      <div class="stage">
+        <canvas id="c1" tabindex="0" role="img" aria-label="마찰 실험 화면. 손에 든 물체를 끌어 아래 물체 위에서 좌우로 문지릅니다."></canvas>
+        <div class="stage-cap">
+          <span>손에 든 물체를 끌어 내려서 아래 물체 위에서 좌우로 문질러요.</span>
+          <div class="btns">
+            <label class="toggle"><input type="checkbox" id="show1" checked>전하 보이기</label>
+            <button class="btn sun" type="button" id="auto1">자동으로 문지르기</button>
+            <button class="btn alt" type="button" id="reset1">처음 상태로</button>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="box">
+          <h3><span class="dot"></span>재료 고르기</h3>
+          <p class="sub">손에 든 물체</p>
+          <div class="mats" id="pickA"></div>
+          <p class="sub">아래에 놓인 물체</p>
+          <div class="mats" id="pickB"></div>
+        </div>
+        <div class="box">
+          <h3><span class="dot"></span>관찰 결과</h3>
+          <div class="readouts"><div class="ro" id="r1a"></div><div class="ro" id="r1b"></div></div>
+          <p class="msg" id="m1"></p>
+          <div class="series-wrap"><div class="series" id="series1"></div><div class="series-grad"></div></div>
+          <p class="flow" id="flow1"></p>
+        </div>
+        <div class="box">
+          <h3><span class="dot"></span>핵심 정리</h3>
+          <ul class="keys">
+            <li>서로 다른 두 물체를 문지르면 <b>전자</b>가 한 물체에서 다른 물체로 이동해요. 원자핵(양전하)은 움직이지 않아요.</li>
+            <li>전자를 잃은 물체는 <span class="pos-t">(+)전하</span>, 전자를 얻은 물체는 <span class="neg-t">(−)전하</span>를 띠어요. 이렇게 물체가 전기를 띠는 현상이 <b>대전</b>이고, 전기를 띤 물체가 <b>대전체</b>예요.</li>
+            <li>대전열에서 서로 멀리 떨어진 물체끼리 문지를수록 전자가 많이 이동해요.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 실험 2 -->
+  <section id="force" role="tabpanel" aria-labelledby="t-force" hidden>
+    <div class="bench">
+      <div class="stage">
+        <canvas id="c2" tabindex="0" role="img" aria-label="전기력 실험 화면. 손에 든 막대를 명주실에 매단 막대 가까이 가져갑니다."></canvas>
+        <div class="stage-cap">
+          <span>손에 든 막대를 끌어서 매달린 막대 끝에 가까이 가져가 봐요.</span>
+          <div class="btns">
+            <button class="btn sun" type="button" id="near2">가까이 가져가기</button>
+            <button class="btn alt" type="button" id="far2">멀리 치우기</button>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="box">
+          <h3><span class="dot"></span>막대 준비하기</h3>
+          <div class="setup">
+            <div class="who"><i>매단</i>명주실에 매단 막대</div>
+            <div class="row">
+              <label>막대 재료<select id="hangMat"></select></label>
+              <label>문지른 물체<select id="hangRub"></select></label>
+            </div>
+            <div class="who"><i>손</i>손에 든 막대</div>
+            <div class="row">
+              <label>막대 재료<select id="handMat"></select></label>
+              <label>문지른 물체<select id="handRub"></select></label>
+            </div>
+            <div class="btns">
+              <button class="btn alt" type="button" data-preset="same">같은 전하끼리</button>
+              <button class="btn alt" type="button" data-preset="diff">다른 전하끼리</button>
+              <button class="btn alt" type="button" data-preset="neutral">대전 안 된 막대</button>
+            </div>
+          </div>
+        </div>
+        <div class="box">
+          <h3><span class="dot"></span>관찰 결과</h3>
+          <div class="verdict" id="v2"></div>
+          <div class="readouts"><div class="ro" id="r2a"></div><div class="ro" id="r2b"></div></div>
+          <p class="msg" id="m2"></p>
+        </div>
+        <div class="box">
+          <h3><span class="dot"></span>핵심 정리</h3>
+          <ul class="keys">
+            <li>전하를 띤 물체 사이에 작용하는 힘이 <b>전기력</b>이에요.</li>
+            <li>같은 종류의 전하끼리는 밀어내는 힘(<b>척력</b>), 다른 종류끼리는 끌어당기는 힘(<b>인력</b>)이 작용해요.</li>
+            <li>두 물체 사이의 거리가 가까울수록, 전하의 양이 많을수록 전기력이 커요.</li>
+            <li>명주실은 전기가 잘 통하지 않아서 매단 막대의 전하가 빠져나가지 않아요.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 실험 3 -->
+  <section id="scope" role="tabpanel" aria-labelledby="t-scope" hidden>
+    <div class="bench">
+      <div class="stage">
+        <canvas id="c3" tabindex="0" role="img" aria-label="검전기 실험 화면. 대전된 막대를 검전기 금속판에 가까이 가져갑니다."></canvas>
+        <div class="stage-cap">
+          <span>막대를 끌어서 금속판에 가까이 가져가거나 닿게 해 봐요.</span>
+          <div class="btns">
+            <button class="btn sun" type="button" id="near3">가까이</button>
+            <button class="btn alt" type="button" id="touch3">접촉시키기</button>
+            <button class="btn alt" type="button" id="far3">멀리 치우기</button>
+            <button class="btn alt" type="button" id="ground3">손가락 대기</button>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="box">
+          <h3><span class="dot"></span>대전체 준비하기</h3>
+          <div class="setup">
+            <div class="row">
+              <label>막대 재료<select id="rodMat"></select></label>
+              <label>문지른 물체<select id="rodRub"></select></label>
+            </div>
+            <div class="btns"><button class="btn alt" type="button" id="reset3">검전기 처음 상태로</button></div>
+          </div>
+        </div>
+        <div class="box">
+          <h3><span class="dot"></span>관찰 결과</h3>
+          <div class="readouts"><div class="ro" id="r3a"></div><div class="ro" id="r3b"></div><div class="ro" id="r3c"></div></div>
+          <p class="msg" id="m3"></p>
+        </div>
+        <div class="box">
+          <h3><span class="dot"></span>핵심 정리</h3>
+          <ul class="keys">
+            <li><b>정전기 유도</b>: 대전체를 금속에 가까이 하면 금속 속 자유 전자가 이동해서, 가까운 쪽은 대전체와 <b>다른</b> 종류, 먼 쪽은 <b>같은</b> 종류의 전하를 띠어요.</li>
+            <li><b>검전기</b>는 정전기 유도를 이용해 물체가 대전되었는지 알아보는 기구예요. 금속박이 벌어지면 대전체예요.</li>
+            <li>금속박이 많이 벌어질수록 대전체의 전하량이 많아요.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 퀴즈 -->
+  <section id="quiz" role="tabpanel" aria-labelledby="t-quiz" hidden>
+    <div class="quiz">
+      <div class="qhead"><span id="qprog">1 / 10</span><div class="qbar"><i id="qfill"></i></div><span id="qscore">맞힌 문제 0</span></div>
+      <div class="qcard" id="qcard" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <footer>대전열은 물질의 표면 상태나 습도에 따라 조금씩 달라질 수 있어요. 이 실험실은 교과서에 자주 나오는 대전열 (+) 털가죽 – 유리 – 명주 – 나무 – 고무 – 플라스틱 (−)을 따릅니다.</footer>
+</div>
+
+<script>
+(() => {
+const W = 800, H = 500;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const $ = s => document.querySelector(s);
+let T = 0;
+
+/* ---------- 재료와 대전열 ---------- */
+const MATS = {
+  fur:     { name:'털가죽',   kind:'cloth', rank:0 },
+  glass:   { name:'유리',     kind:'rod',   rank:1 },
+  silk:    { name:'명주',     kind:'cloth', rank:2 },
+  wood:    { name:'나무',     kind:'rod',   rank:3 },
+  rubber:  { name:'고무',     kind:'rod',   rank:4 },
+  plastic: { name:'플라스틱', kind:'rod',   rank:5 },
+};
+const SERIES = ['fur','glass','silk','wood','rubber','plastic'];
+const RODS = SERIES.filter(k => MATS[k].kind === 'rod');
+const nm = k => MATS[k].name;
+
+// 문지른 뒤 막대가 띠는 전하(전자 개수 단위). 대전열에서 멀수록 많이 이동
+function rubCharge(mat, partner) {
+  const d = MATS[partner].rank - MATS[mat].rank;
+  if (!d) return 0;
+  return Math.sign(d) * Math.min(10, 2 * Math.abs(d) + 2);
+}
+
+/* ---------- 한국어 조사 ---------- */
+function jong(w) { const c = w.charCodeAt(w.length - 1); return (c >= 0xAC00 && c <= 0xD7A3) ? (c - 0xAC00) % 28 : 0; }
+const eun = w => w + (jong(w) ? '은' : '는');
+const eul = w => w + (jong(w) ? '을' : '를');
+const iga = w => w + (jong(w) ? '이' : '가');
+const ro  = w => { const j = jong(w); return w + (j && j !== 8 ? '으로' : '로'); };
+
+/* ---------- 캔버스 공통 ---------- */
+function setupCanvas(cv) {
+  const ctx = cv.getContext('2d');
+  const st = { cv, ctx, scale: 1 };
+  const fit = () => {
+    const r = cv.getBoundingClientRect();
+    if (!r.width) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(r.width * dpr);
+    cv.height = Math.round(r.width * H / W * dpr);
+    st.scale = cv.width / W;
+  };
+  fit();
+  new ResizeObserver(fit).observe(cv);
+  st.toLocal = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height }; };
+  st.begin = () => { ctx.setTransform(st.scale, 0, 0, st.scale, 0, 0); ctx.clearRect(0, 0, W, H); };
+  return st;
+}
+function rr(ctx, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function hash(n) { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); }
+function smoothTo(ctx, pts) {
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+    ctx.quadraticCurveTo(pts[i][0], pts[i][1], mx, my);
+  }
+  const l = pts[pts.length - 1]; ctx.lineTo(l[0], l[1]);
+}
+
+/* ---------- 재료 그리기 ---------- */
+function drawRod(ctx, mat, cx, cy, len, th, ang = 0) {
+  const x0 = -len / 2, y0 = -th / 2, r = th / 2;
+  ctx.save();
+  ctx.translate(cx + 3, cy + 5); ctx.rotate(ang);
+  ctx.fillStyle = mat === 'glass' ? 'rgba(30,42,71,.07)' : 'rgba(30,42,71,.16)';
+  rr(ctx, x0, y0, len, th, r); ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(ang);
+  const g = ctx.createLinearGradient(0, y0, 0, y0 + th);
+  let stroke;
+  if (mat === 'glass') {
+    g.addColorStop(0, 'rgba(206,236,250,.8)'); g.addColorStop(.32, 'rgba(255,255,255,.92)');
+    g.addColorStop(.7, 'rgba(172,218,238,.75)'); g.addColorStop(1, 'rgba(110,170,205,.9)');
+    stroke = 'rgba(80,140,180,.9)';
+  } else if (mat === 'plastic') {
+    g.addColorStop(0, '#D8C2FF'); g.addColorStop(.3, '#A47BF5'); g.addColorStop(.75, '#7448D8'); g.addColorStop(1, '#5631B0');
+    stroke = '#4C2A9C';
+  } else if (mat === 'rubber') {
+    g.addColorStop(0, '#5B5B66'); g.addColorStop(.35, '#3A3A43'); g.addColorStop(1, '#1D1D23');
+    stroke = '#15151A';
+  } else {
+    g.addColorStop(0, '#EDC690'); g.addColorStop(.45, '#D29A5B'); g.addColorStop(1, '#A56C37');
+    stroke = '#8A5528';
+  }
+  rr(ctx, x0, y0, len, th, r);
+  ctx.fillStyle = g; ctx.fill();
+
+  ctx.save();
+  rr(ctx, x0, y0, len, th, r); ctx.clip();
+  if (mat === 'wood') {
+    ctx.strokeStyle = 'rgba(120,68,28,.35)'; ctx.lineWidth = Math.max(.8, th * .035);
+    for (let i = 0; i < 6; i++) {
+      const yy = y0 + th * (.12 + .15 * i);
+      ctx.beginPath(); ctx.moveTo(x0, yy);
+      for (let x = x0; x <= x0 + len; x += Math.max(6, len / 30)) ctx.lineTo(x, yy + Math.sin(x * .028 + i * 1.7) * th * .05);
+      ctx.stroke();
+    }
+    ctx.beginPath(); ctx.ellipse(x0 + len * .62, th * .05, th * .14, th * .08, 0, 0, 7); ctx.stroke();
+  } else if (mat === 'rubber') {
+    ctx.fillStyle = 'rgba(255,255,255,.07)';
+    const n = Math.round(len / 6);
+    for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(x0 + hash(i) * len, y0 + hash(i + 50) * th, Math.max(.6, th * .02), 0, 7); ctx.fill(); }
+  } else if (mat === 'glass') {
+    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = Math.max(1, th * .04);
+    ctx.beginPath(); ctx.moveTo(x0 + r, y0 + th * .78); ctx.lineTo(x0 + len - r, y0 + th * .78); ctx.stroke();
+  }
+  ctx.restore();
+
+  // 광택
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = mat === 'rubber' ? 'rgba(255,255,255,.18)' : 'rgba(255,255,255,.75)';
+  ctx.lineWidth = Math.max(1.2, th * .13);
+  ctx.beginPath(); ctx.moveTo(x0 + r * .9, y0 + th * .27); ctx.lineTo(x0 + len - r * .9, y0 + th * .27); ctx.stroke();
+  rr(ctx, x0, y0, len, th, r);
+  ctx.lineWidth = Math.max(1, th * .04); ctx.strokeStyle = stroke; ctx.stroke();
+  if (mat === 'wood') { // 나뭇결 끝면
+    ctx.fillStyle = 'rgba(140,85,40,.25)';
+    ctx.beginPath(); ctx.ellipse(x0 + len - r * .55, 0, r * .45, r * .85, 0, 0, 7); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawSilk(ctx, cx, cy, w, h) {
+  const x0 = cx - w / 2, y0 = cy - h / 2, n = 6;
+  const top = [], bot = [];
+  for (let i = 0; i <= n; i++) {
+    const x = x0 + w * i / n;
+    top.push([x, y0 + h * .1 + Math.sin(i * 1.9) * h * .08]);
+    bot.push([x, y0 + h - h * .1 + Math.sin(i * 1.4 + 1) * h * .08]);
+  }
+  const shape = () => { ctx.beginPath(); ctx.moveTo(top[0][0], top[0][1]); smoothTo(ctx, top); ctx.lineTo(bot[n][0], bot[n][1]); smoothTo(ctx, bot.slice().reverse()); ctx.closePath(); };
+  ctx.save();
+  ctx.fillStyle = 'rgba(30,42,71,.12)'; ctx.translate(3, 5); shape(); ctx.fill(); ctx.translate(-3, -5);
+  const g = ctx.createLinearGradient(x0, y0, x0 + w, y0 + h);
+  g.addColorStop(0, '#FFFBF0'); g.addColorStop(.35, '#F0DDB4'); g.addColorStop(.55, '#FFF8E6'); g.addColorStop(1, '#E2C690');
+  shape(); ctx.fillStyle = g; ctx.fill();
+  ctx.save(); shape(); ctx.clip();
+  const sh = ctx.createLinearGradient(x0 + w * .25, y0, x0 + w * .55, y0 + h);
+  sh.addColorStop(0, 'rgba(255,255,255,0)'); sh.addColorStop(.5, 'rgba(255,255,255,.8)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = sh; ctx.fillRect(x0, y0, w, h);
+  ctx.strokeStyle = 'rgba(175,138,80,.28)'; ctx.lineWidth = Math.max(1, h * .05); ctx.lineCap = 'round';
+  [.2, .47, .74].forEach((f, i) => { ctx.beginPath(); ctx.moveTo(x0 + w * f, y0); ctx.quadraticCurveTo(x0 + w * (f + .06), cy + (i - 1) * h * .1, x0 + w * (f - .02), y0 + h); ctx.stroke(); });
+  ctx.restore();
+  shape(); ctx.strokeStyle = '#CDB083'; ctx.lineWidth = Math.max(.8, h * .02); ctx.stroke();
+  // 올 풀린 술
+  ctx.strokeStyle = '#D8C096'; ctx.lineWidth = Math.max(.6, h * .015);
+  for (let j = 0; j < 6; j++) {
+    const yy = y0 + h * (.22 + j * .11);
+    ctx.beginPath(); ctx.moveTo(x0 + 1, yy); ctx.lineTo(x0 - h * .06, yy + 1); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x0 + w - 1, yy); ctx.lineTo(x0 + w + h * .06, yy + 1); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawFur(ctx, cx, cy, w, h) {
+  const x0 = cx - w / 2, y0 = cy - h / 2;
+  ctx.save();
+  ctx.fillStyle = 'rgba(30,42,71,.14)'; rr(ctx, x0 + 3, y0 + 5, w, h, h * .45); ctx.fill();
+  const g = ctx.createRadialGradient(cx - w * .15, cy - h * .25, 2, cx, cy, Math.max(w, h) * .6);
+  g.addColorStop(0, '#C9925F'); g.addColorStop(1, '#7A4D2C');
+  rr(ctx, x0, y0, w, h, h * .45); ctx.fillStyle = g; ctx.fill();
+  const L = Math.max(3, h * .1);
+  ctx.lineCap = 'round'; ctx.lineWidth = Math.max(.8, h * .025);
+  const n = Math.round(w * h / 80);
+  for (let i = 0; i < n; i++) {
+    const x = x0 + hash(i) * w, y = y0 + hash(i + 99) * h;
+    const nx = (x - cx) / (w / 2), ny = (y - cy) / (h / 2);
+    if (Math.abs(nx) > .8 && Math.abs(ny) > .55) continue;
+    const a = .9 + (hash(i + 7) - .5) * .9;
+    ctx.strokeStyle = i % 3 ? 'rgba(78,44,20,.45)' : 'rgba(245,212,168,.55)';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * L, y + Math.sin(a) * L); ctx.stroke();
+  }
+  const m = Math.round((w + h) / 2.5);
+  ctx.strokeStyle = '#7A4D2C';
+  for (let j = 0; j < m; j++) {
+    const a = j / m * Math.PI * 2, c = Math.cos(a), s = Math.sin(a);
+    const ex = cx + Math.sign(c) * Math.pow(Math.abs(c), .35) * (w / 2 - 2);
+    const ey = cy + Math.sign(s) * Math.pow(Math.abs(s), .35) * (h / 2 - 2);
+    const aa = a + (hash(j + 3) - .5) * .6;
+    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex + Math.cos(aa) * L * .9, ey + Math.sin(aa) * L * .9); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawMaterial(ctx, mat, cx, cy, w, h) {
+  if (MATS[mat].kind === 'rod') drawRod(ctx, mat, cx, cy, w, h, 0);
+  else if (mat === 'silk') drawSilk(ctx, cx, cy, w, h);
+  else drawFur(ctx, cx, cy, w, h);
+}
+
+/* ---------- 손, 배경, 전하 ---------- */
+function drawHandBack(ctx, x, y, h) {
+  ctx.save();
+  ctx.lineWidth = 2;
+  ctx.fillStyle = '#8FD5C2'; ctx.strokeStyle = '#5BB59E';
+  rr(ctx, x - 25, y - h / 2 - 140, 50, 116, 16); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#6CC5AE'; rr(ctx, x - 28, y - h / 2 - 38, 56, 15, 7); ctx.fill();
+  ctx.fillStyle = '#FFD9BE'; ctx.strokeStyle = '#E3A47E';
+  ctx.beginPath(); ctx.ellipse(x, y - h / 2 - 8, 28, 22, 0, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+function drawHandFront(ctx, x, y, h) {
+  ctx.save();
+  ctx.lineWidth = 2; ctx.fillStyle = '#FFDFC8'; ctx.strokeStyle = '#E3A47E';
+  for (let i = 0; i < 3; i++) {
+    const fx = x - 17 + i * 17;
+    rr(ctx, fx - 8, y - h / 2 - 16, 16, h + 22, 8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.6)'; rr(ctx, fx - 4, y + h / 2 - 2, 8, 4, 2); ctx.fill(); ctx.fillStyle = '#FFDFC8';
+  }
+  ctx.restore();
+}
+function drawRoom(ctx, ty) {
+  const g = ctx.createLinearGradient(0, 0, 0, ty);
+  g.addColorStop(0, '#EEF4FC'); g.addColorStop(1, '#D9E4F3');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, ty);
+  ctx.fillStyle = 'rgba(30,42,71,.055)';
+  for (let x = 20; x < W; x += 40) for (let y = 20; y < ty - 16; y += 40) { ctx.beginPath(); ctx.arc(x, y, 2.2, 0, 7); ctx.fill(); }
+  const t = ctx.createLinearGradient(0, ty, 0, H);
+  t.addColorStop(0, '#E4BB89'); t.addColorStop(1, '#C18B57');
+  ctx.fillStyle = t; ctx.fillRect(0, ty, W, H - ty);
+  ctx.fillStyle = '#F2D3AC'; ctx.fillRect(0, ty, W, 5);
+  ctx.strokeStyle = 'rgba(140,90,45,.16)'; ctx.lineWidth = 1.5;
+  for (let i = 0; i < 4; i++) {
+    const y = ty + 18 + i * ((H - ty - 18) / 4);
+    ctx.beginPath(); ctx.moveTo(0, y);
+    for (let x = 0; x <= W; x += 40) ctx.lineTo(x, y + Math.sin(x * .013 + i * 2) * 3);
+    ctx.stroke();
+  }
+}
+function drawElectron(ctx, x, y, r) {
+  const g = ctx.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r);
+  g.addColorStop(0, '#B4D0FF'); g.addColorStop(1, '#2A62DD');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+  ctx.fillStyle = '#14204A';
+  ctx.beginPath(); ctx.arc(x - r * .36, y - r * .12, r * .17, 0, 7); ctx.arc(x + r * .36, y - r * .12, r * .17, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = r * .24; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x - r * .3, y + r * .42); ctx.lineTo(x + r * .3, y + r * .42); ctx.stroke();
+}
+function drawProton(ctx, x, y, r) {
+  const g = ctx.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r);
+  g.addColorStop(0, '#FFC0C6'); g.addColorStop(1, '#DC3B4D');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = r * .26; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x - r * .48, y); ctx.lineTo(x + r * .48, y); ctx.moveTo(x, y - r * .48); ctx.lineTo(x, y + r * .48); ctx.stroke();
+}
+function drawCharge(ctx, x, y, sign, r) { sign > 0 ? drawProton(ctx, x, y, r) : drawElectron(ctx, x, y, r); }
+function marksAlong(ctx, x1, y1, x2, y2, n, sign, r, wob = true) {
+  for (let i = 0; i < n; i++) {
+    const f = n === 1 ? .5 : i / (n - 1);
+    const dx = wob ? Math.sin(T * 2.6 + i * 1.9) * 1.2 : 0, dy = wob ? Math.cos(T * 2.2 + i * 2.3) * 1.2 : 0;
+    drawCharge(ctx, x1 + (x2 - x1) * f + dx, y1 + (y2 - y1) * f + dy, sign, r);
+  }
+}
+function drawSpark(ctx, x, y, s, a) {
+  ctx.save(); ctx.globalAlpha = a; ctx.translate(x, y); ctx.fillStyle = '#FFC531';
+  ctx.beginPath();
+  for (let i = 0; i < 8; i++) { const rad = i % 2 ? s * .32 : s, an = i * Math.PI / 4 - Math.PI / 2; ctx.lineTo(Math.cos(an) * rad, Math.sin(an) * rad); }
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+const TONES = {
+  pos: ['#FDE4E6', '#D33C4B'], neg: ['#E2ECFF', '#2A62DD'], none: ['#FFFFFF', '#1E2A47'],
+  ok: ['#DDF4E9', '#16865A'], warn: ['#FFF3CC', '#8A6100'],
+};
+function pill(ctx, x, y, text, tone = 'none', size = 18) {
+  ctx.save();
+  ctx.font = `${size}px Jua, "Gowun Dodum", sans-serif`;
+  const w = ctx.measureText(text).width + 26, h = size + 14;
+  x = clamp(x, w / 2 + 6, W - w / 2 - 6);
+  const c = TONES[tone];
+  rr(ctx, x - w / 2, y - h / 2, w, h, h / 2);
+  ctx.fillStyle = c[0]; ctx.fill();
+  ctx.lineWidth = 2; ctx.strokeStyle = tone === 'none' ? 'rgba(30,42,71,.18)' : c[1] + '66'; ctx.stroke();
+  ctx.fillStyle = c[1]; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y + 1);
+  ctx.restore();
+}
+const toneOf = q => q > .3 ? 'pos' : q < -.3 ? 'neg' : 'none';
+const signWord = q => q > .3 ? '(+)전하' : q < -.3 ? '(−)전하' : '중성';
+function arrow(ctx, x1, y1, x2, y2, color, w = 6) {
+  const a = Math.atan2(y2 - y1, x2 - x1), hl = w * 2.6;
+  ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - Math.cos(a) * hl * .6, y2 - Math.sin(a) * hl * .6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - Math.cos(a - .5) * hl, y2 - Math.sin(a - .5) * hl);
+  ctx.lineTo(x2 - Math.cos(a + .5) * hl, y2 - Math.sin(a + .5) * hl);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function setHTML(el, html) { if (el._h !== html) { el._h = html; el.innerHTML = html; } }
+function readout(el, k, q, s) {
+  el.className = 'ro ' + (q > .3 ? 'pos' : q < -.3 ? 'neg' : '');
+  setHTML(el, `<div class="k">${k}</div><div class="v">${signWord(q)}</div>${s ? `<div class="s">${s}</div>` : ''}`);
+}
+
+/* =========================================================
+   실험 1. 마찰 전기
+   ========================================================= */
+const S1 = setupCanvas($('#c1'));
+const TABLE1 = 400;
+const E1 = { aMat: 'glass', bMat: 'silk', show: true, flying: [], sparks: [], rub: 0, transferred: 0, note: '', auto: 0, landed: false, lift: false, ph: 0, drag: null };
+
+function makeObj(mat, role) {
+  const kind = MATS[mat].kind, o = { mat, kind, protons: [], electrons: [] };
+  if (role === 'A') { o.w = kind === 'rod' ? 300 : 210; o.h = kind === 'rod' ? 40 : 84; o.x = 420; o.y = 170; }
+  else { o.w = 440; o.h = kind === 'rod' ? 44 : 58; o.x = 400; o.y = TABLE1 - o.h / 2 + 2; }
+  for (let i = 0; i < 10; i++) {
+    const u = .12 + i * (.76 / 9), v = i % 2 ? .2 : -.2;
+    o.protons.push({ u, v });
+    o.electrons.push({ u: u + .035, v: -v * .9, ph: Math.random() * 6.28 });
+  }
+  return o;
+}
+const absP = (o, p) => ({ x: o.x + (p.u - .5) * o.w, y: o.y + p.v * o.h });
+const q1 = o => o.protons.length - o.electrons.length - E1.flying.filter(f => f.to === o).length;
+const contactY = () => E1.B.y - E1.B.h / 2 - E1.A.h / 2 + 6;
+const inContact = () => E1.A.y >= contactY() - 3 && Math.abs(E1.A.x - E1.B.x) < (E1.A.w + E1.B.w) / 2 - 40;
+const e1Max = () => Math.min(10, 2 * Math.abs(MATS[E1.bMat].rank - MATS[E1.aMat].rank) + 2);
+
+function e1Reset() {
+  E1.A = makeObj(E1.aMat, 'A'); E1.B = makeObj(E1.bMat, 'B');
+  E1.flying = []; E1.sparks = []; E1.rub = 0; E1.transferred = 0; E1.note = ''; E1.auto = 0; E1.lift = false;
+  updateNotes1();
+}
+function e1Rub(d) {
+  if (d <= 0) return;
+  if (E1.aMat === E1.bMat) { if (E1.note !== 'same') { E1.note = 'same'; updateNotes1(); } return; }
+  if (E1.transferred >= e1Max()) { if (E1.note !== 'max') { E1.note = 'max'; updateNotes1(); } return; }
+  const diff = MATS[E1.bMat].rank - MATS[E1.aMat].rank;
+  const need = 110 - 15 * Math.abs(diff);
+  E1.rub += d;
+  while (E1.rub >= need && E1.transferred < e1Max()) {
+    E1.rub -= need;
+    diff > 0 ? e1Transfer(E1.A, E1.B) : e1Transfer(E1.B, E1.A);
+  }
+}
+function e1Transfer(from, to) {
+  if (!from.electrons.length) return;
+  const cy = E1.B.y - E1.B.h / 2;
+  let bi = 0, bd = 1e9;
+  from.electrons.forEach((e, i) => { const p = absP(from, e); const d = Math.abs(p.y - cy) + Math.abs(p.x - E1.A.x) * .3 + Math.random() * 25; if (d < bd) { bd = d; bi = i; } });
+  const e = from.electrons.splice(bi, 1)[0], p0 = absP(from, e);
+  E1.flying.push({ x0: p0.x, y0: p0.y, to, u: .12 + Math.random() * .76, v: (Math.random() - .5) * .5, t: 0, ph: e.ph });
+  E1.sparks.push({ x: p0.x, y: cy, t: 0 });
+  E1.transferred++;
+  updateNotes1();
+}
+function e1Step(dt) {
+  const A = E1.A;
+  if (E1.auto > 0) {
+    const cy = contactY();
+    if (!E1.landed) {
+      A.x += (E1.B.x - A.x) * Math.min(1, dt * 6);
+      A.y = Math.min(cy, A.y + 520 * dt);
+      if (A.y >= cy) { E1.landed = true; E1.ph = Math.asin(clamp((A.x - E1.B.x) / 120, -1, 1)); }
+    } else {
+      E1.ph += dt * 6.5;
+      const nx = E1.B.x + Math.sin(E1.ph) * 120;
+      e1Rub(Math.abs(nx - A.x)); A.x = nx; A.y = cy;
+      E1.auto -= dt;
+      if (E1.auto <= 0) { E1.auto = 0; E1.lift = true; }
+    }
+  }
+  if (E1.lift) { A.y += (170 - A.y) * Math.min(1, dt * 4); if (Math.abs(A.y - 170) < 1) E1.lift = false; }
+  for (const f of E1.flying) f.t += dt / .5;
+  E1.flying = E1.flying.filter(f => { if (f.t >= 1) { f.to.electrons.push({ u: f.u, v: f.v, ph: f.ph }); return false; } return true; });
+  for (const s of E1.sparks) s.t += dt / .55;
+  E1.sparks = E1.sparks.filter(s => s.t < 1);
+}
+function drawParticles(ctx, o) {
+  for (const p of o.protons) { const a = absP(o, p); drawProton(ctx, a.x, a.y, 8); }
+  for (const e of o.electrons) { const a = absP(o, e); drawElectron(ctx, a.x + Math.sin(T * 3 + e.ph) * 1.6, a.y + Math.cos(T * 2.6 + e.ph) * 1.6, 9); }
+}
+function e1Draw() {
+  const ctx = S1.ctx; S1.begin();
+  drawRoom(ctx, TABLE1);
+  const A = E1.A, B = E1.B;
+  drawMaterial(ctx, B.mat, B.x, B.y, B.w, B.h);
+  if (E1.show) drawParticles(ctx, B);
+  const hx = A.x - A.w / 2 + (A.kind === 'rod' ? 46 : 62);
+  drawHandBack(ctx, hx, A.y, A.h);
+  drawMaterial(ctx, A.mat, A.x, A.y, A.w, A.h);
+  drawHandFront(ctx, hx, A.y, A.h);
+  if (E1.show) {
+    drawParticles(ctx, A);
+    for (const f of E1.flying) {
+      const to = absP(f.to, f), t = f.t, e = t * t * (3 - 2 * t);
+      drawElectron(ctx, f.x0 + (to.x - f.x0) * e, f.y0 + (to.y - f.y0) * e - Math.sin(Math.PI * t) * 46, 10);
+    }
+  }
+  for (const s of E1.sparks) drawSpark(ctx, s.x, s.y, 6 + 18 * s.t, 1 - s.t);
+  const qa = q1(A), qb = q1(B);
+  pill(ctx, A.x + A.w * .22, A.y - A.h / 2 - 26, `${nm(A.mat)} · ${signWord(qa)}`, toneOf(qa));
+  pill(ctx, B.x, TABLE1 + 46, `${nm(B.mat)} · ${signWord(qb)}`, toneOf(qb));
+  if (!E1.transferred && !E1.drag && !E1.auto && E1.aMat !== E1.bMat) {
+    const bob = Math.sin(T * 3) * 6;
+    ctx.save(); ctx.globalAlpha = .85;
+    arrow(ctx, A.x + 175, A.y - 10 + bob, A.x + 175, A.y + 70 + bob, '#1E2A47', 4);
+    ctx.restore();
+    pill(ctx, A.x + 175, A.y - 36 + bob, '끌어서 문질러요', 'warn', 15);
+  }
+}
+
+// 끌기
+(() => {
+  const cv = S1.cv;
+  cv.addEventListener('pointerdown', e => {
+    const p = S1.toLocal(e);
+    E1.auto = 0; E1.lift = false;
+    E1.drag = { ox: E1.A.x - p.x, oy: E1.A.y - p.y };
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove', e => {
+    if (!E1.drag) return;
+    const p = S1.toLocal(e), A = E1.A;
+    const nx = clamp(p.x + E1.drag.ox, 40, W - 40), ny = clamp(p.y + E1.drag.oy, 70, contactY());
+    const was = inContact(), ox = A.x;
+    A.x = nx; A.y = ny;
+    if (was && inContact()) e1Rub(Math.abs(nx - ox));
+  });
+  const end = () => { E1.drag = null; };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  cv.addEventListener('keydown', e => {
+    const A = E1.A, step = 14;
+    const moves = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+    const m = moves[e.key]; if (!m) return;
+    e.preventDefault(); E1.auto = 0; E1.lift = false;
+    const was = inContact(), ox = A.x;
+    A.x = clamp(A.x + m[0], 40, W - 40); A.y = clamp(A.y + m[1], 70, contactY());
+    if (was && inContact()) e1Rub(Math.abs(A.x - ox));
+  });
+})();
+
+function buildPicker(el, key) {
+  SERIES.forEach(k => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mat'; b.dataset.mat = k;
+    b.setAttribute('aria-pressed', String(E1[key] === k));
+    const c = document.createElement('canvas'); c.width = 128; c.height = 72;
+    const x = c.getContext('2d'); x.scale(2, 2);
+    if (MATS[k].kind === 'rod') drawRod(x, k, 32, 17, 54, 14, 0); else drawMaterial(x, k, 32, 17, 52, 26);
+    const s = document.createElement('span'); s.textContent = nm(k);
+    b.append(c, s);
+    b.addEventListener('click', () => {
+      E1[key] = k;
+      el.querySelectorAll('.mat').forEach(m => m.setAttribute('aria-pressed', String(m.dataset.mat === k)));
+      e1Reset();
+    });
+    el.append(b);
+  });
+}
+function renderSeries(el, tags) {
+  let h = '<span class="end p">(+)</span>';
+  SERIES.forEach(k => { const t = tags[k]; h += `<span class="chip${t ? ' on' : ''}">${t ? `<span class="tag">${t}</span>` : ''}${nm(k)}</span>`; });
+  h += '<span class="end n">(−)</span>';
+  setHTML(el, h);
+}
+function updateNotes1() {
+  const A = E1.A, B = E1.B, qa = q1(A), qb = q1(B);
+  const sub = q => q > 0 ? `전자 ${q}개를 잃었어요` : q < 0 ? `전자 ${-q}개를 얻었어요` : '전자 수와 양전하 수가 같아요';
+  readout($('#r1a'), `손에 든 물체 · ${nm(A.mat)}`, qa, sub(qa));
+  readout($('#r1b'), `아래 물체 · ${nm(B.mat)}`, qb, sub(qb));
+  const a = nm(A.mat), b = nm(B.mat);
+  let m;
+  if (E1.aMat === E1.bMat) {
+    m = E1.note === 'same'
+      ? `같은 물질끼리는 전자를 끌어당기는 정도가 같아서 아무리 문질러도 전자가 이동하지 않아요. 두 물체 모두 <b>중성</b>이에요.`
+      : `같은 물질인 ${eul(a)} 두 개 골랐어요. 문질러도 대전되는지 직접 확인해 볼까요?`;
+  } else if (!E1.transferred) {
+    m = `${eul(a)} 끌어 내려서 ${b} 위에서 좌우로 문질러 보세요. 아래 대전열을 보고 어느 쪽이 (+)전하를 띨지 먼저 예상해 봐요.`;
+  } else {
+    const donorA = MATS[E1.bMat].rank > MATS[E1.aMat].rank;
+    const d = donorA ? a : b, r = donorA ? b : a;
+    m = `${eun(d)} 전자를 잃어 <span class="pos-t">(+)전하</span>, ${eun(r)} 전자를 얻어 <span class="neg-t">(−)전하</span>를 띠어요. 두 물체의 전하량은 같고 종류는 반대예요.`;
+    if (E1.note === 'max') m += ' 충분히 대전되어서 더 문질러도 전자가 더 이동하지 않아요.';
+  }
+  setHTML($('#m1'), m);
+  const tags = {}; tags[A.mat] = 'A 손'; tags[B.mat] = A.mat === B.mat ? 'A·B' : 'B 아래';
+  renderSeries($('#series1'), tags);
+  let fl = '';
+  if (E1.transferred) {
+    const donorA = MATS[E1.bMat].rank > MATS[E1.aMat].rank;
+    fl = `전자 이동 방향: <b>${donorA ? a : b} → ${donorA ? b : a}</b> (전자 ${E1.transferred}개). 대전열에서 (+)쪽 물체가 전자를 내줘요.`;
+  } else fl = '대전열에서 왼쪽(+)에 있는 물질일수록 전자를 잃기 쉬워요.';
+  setHTML($('#flow1'), fl);
+}
+buildPicker($('#pickA'), 'aMat');
+buildPicker($('#pickB'), 'bMat');
+$('#show1').addEventListener('change', e => { E1.show = e.target.checked; });
+$('#auto1').addEventListener('click', () => { E1.auto = 3.2; E1.landed = false; E1.lift = false; });
+$('#reset1').addEventListener('click', e1Reset);
+e1Reset();
+
+/* =========================================================
+   실험 2. 전기력 (명주실에 매단 막대)
+   ========================================================= */
+const S2 = setupCanvas($('#c2'));
+const PIV = { x: 410, y: 58 }, L2 = 210, HL = 220, HT = 30, DL = 260, DT = 32, TABLE2 = 440;
+const E2 = { hangMat: 'glass', hangRub: 'silk', handMat: 'plastic', handRub: 'fur', qh: 0, qd: 0, th: 0, om: 0, hx: 610, hy: 268, drag: null, go: null, F: 0 };
+function e2Charges() { E2.qh = rubCharge(E2.hangMat, E2.hangRub); E2.qd = rubCharge(E2.handMat, E2.handRub); }
+const e2Geom = th => ({ cx: PIV.x + L2 * Math.sin(th), cy: PIV.y + L2 * Math.cos(th) });
+function e2Overlap(th, hx, hy) {
+  const { cx, cy } = e2Geom(th);
+  return cx + HL / 2 > hx - 3 && cx - HL / 2 < hx + DL + 3 && Math.abs(cy - hy) < (HT + DT) / 2 + 2;
+}
+function e2Force(cx, cy) {
+  const q1_ = E2.qh, q2 = E2.qd;
+  const dir = Math.sign(E2.hx + DL / 2 - cx) || 1;
+  const ph = { x: cx + dir * 80, y: cy };
+  const pd = { x: clamp(ph.x, E2.hx + 18, E2.hx + 200), y: E2.hy };
+  let dx = ph.x - pd.x, dy = ph.y - pd.y;
+  const r = Math.max(1, Math.hypot(dx, dy)), rc = Math.max(r, 48);
+  let F = 0;
+  if (q1_ && q2) F = 10000 * q1_ * q2 / (rc * rc);
+  else if (q1_ || q2) { const q = q1_ || q2; F = -2600 * q * q / (rc * rc); }
+  return { Fx: F * dx / r, F, dir };
+}
+function e2Step(dt) {
+  if (E2.go) {
+    const k = Math.min(1, dt * 5);
+    const nx = E2.hx + (E2.go.x - E2.hx) * k, ny = E2.hy + (E2.go.y - E2.hy) * k;
+    if (!e2Overlap(E2.th, nx, E2.hy)) E2.hx = nx;
+    if (!e2Overlap(E2.th, E2.hx, ny)) E2.hy = ny;
+    if (Math.hypot(E2.go.x - E2.hx, E2.go.y - E2.hy) < 1) E2.go = null;
+  }
+  const k = dt * 60;
+  const { cx, cy } = e2Geom(E2.th);
+  const f = e2Force(cx, cy);
+  E2.F = f.F; E2.Fx = f.Fx; E2.dir = f.dir;
+  const target = clamp(Math.atan(f.Fx / 140), -.8, .8);
+  E2.om += (target - E2.th) * .07 * k;
+  E2.om *= Math.pow(.86, k);
+  const nt = E2.th + E2.om * k;
+  if (e2Overlap(nt, E2.hx, E2.hy)) E2.om = 0; else E2.th = nt;
+}
+function e2Draw() {
+  const ctx = S2.ctx; S2.begin();
+  drawRoom(ctx, TABLE2);
+  // 스탠드
+  ctx.save();
+  const mg = ctx.createLinearGradient(236, 0, 252, 0); mg.addColorStop(0, '#9AA3B2'); mg.addColorStop(.45, '#E8ECF2'); mg.addColorStop(1, '#7D8696');
+  ctx.fillStyle = '#4A5265'; rr(ctx, 170, TABLE2 - 12, 150, 18, 7); ctx.fill();
+  ctx.fillStyle = mg; ctx.fillRect(238, 44, 13, TABLE2 - 50);
+  const ag = ctx.createLinearGradient(0, 44, 0, 56); ag.addColorStop(0, '#E8ECF2'); ag.addColorStop(1, '#8B94A3');
+  ctx.fillStyle = ag; rr(ctx, 238, 44, PIV.x - 230, 11, 5); ctx.fill();
+  ctx.fillStyle = '#4A5265'; rr(ctx, 229, 38, 31, 22, 6); ctx.fill();
+  ctx.restore();
+  const { cx, cy } = e2Geom(E2.th);
+  // 명주실
+  ctx.save(); ctx.strokeStyle = '#E9D9B0'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(PIV.x, PIV.y); ctx.lineTo(cx, cy - HT / 2); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = '#D9C390'; ctx.beginPath(); ctx.arc(cx, cy - HT / 2, 4, 0, 7); ctx.fill();
+  ctx.font = '14px Jua, sans-serif'; ctx.fillStyle = '#8A6E3B'; ctx.textAlign = 'left';
+  ctx.fillText('명주실', PIV.x + L2 * .45 * Math.sin(E2.th) + 10, PIV.y + 70);
+  ctx.restore();
+  drawRod(ctx, E2.hangMat, cx, cy, HL, HT, 0);
+  // 매단 막대 전하
+  const near = Math.abs(E2.F) > .8;
+  if (E2.qh) marksAlong(ctx, cx - 88, cy, cx + 88, cy, Math.min(7, Math.round(Math.abs(E2.qh) * .7)), Math.sign(E2.qh), 8);
+  else if (E2.qd && near) {
+    const s = -Math.sign(E2.qd), d = E2.dir;
+    marksAlong(ctx, cx + d * 92, cy, cx + d * 70, cy, 2, s, 7);
+    marksAlong(ctx, cx - d * 92, cy, cx - d * 70, cy, 2, -s, 7);
+  }
+  // 손에 든 막대
+  const hcx = E2.hx + DL / 2, hhx = E2.hx + DL - 46;
+  drawHandBack(ctx, hhx, E2.hy, DT);
+  drawRod(ctx, E2.handMat, hcx, E2.hy, DL, DT, 0);
+  drawHandFront(ctx, hhx, E2.hy, DT);
+  if (E2.qd) marksAlong(ctx, E2.hx + 20, E2.hy, E2.hx + 170, E2.hy, Math.min(7, Math.round(Math.abs(E2.qd) * .7)), Math.sign(E2.qd), 8);
+  else if (E2.qh && near) {
+    const s = -Math.sign(E2.qh);
+    marksAlong(ctx, E2.hx + 16, E2.hy, E2.hx + 40, E2.hy, 2, s, 7);
+    marksAlong(ctx, E2.hx + 150, E2.hy, E2.hx + 174, E2.hy, 2, -s, 7);
+  }
+  // 힘 화살표
+  if (Math.abs(E2.Fx) > 1.2) {
+    const len = clamp(Math.abs(E2.Fx) * 2.2, 22, 90) * Math.sign(E2.Fx);
+    const ex = cx + (E2.Fx > 0 ? HL / 2 + 8 : -HL / 2 - 8);
+    arrow(ctx, cx, cy + HT / 2 + 16, cx + len, cy + HT / 2 + 16, E2.F > 0 ? '#D33C4B' : '#16865A', 6);
+  }
+  pill(ctx, cx, cy - HT / 2 - 26 + (cy < 120 ? 60 : 0), `${nm(E2.hangMat)} · ${signWord(E2.qh)}`, toneOf(E2.qh), 16);
+  pill(ctx, hcx - 40, E2.hy + DT / 2 + 26, `${nm(E2.handMat)} · ${signWord(E2.qd)}`, toneOf(E2.qd), 16);
+  const v = e2Verdict();
+  pill(ctx, 640, 34, v.short, v.tone, 18);
+}
+function e2Verdict() {
+  if (!E2.qh && !E2.qd) return { short: '힘이 작용하지 않아요', tone: 'none', cls: '', long: '두 막대 모두 대전되지 않아서 전기력이 작용하지 않아요.' };
+  if (Math.abs(E2.F) < 1.2) return { short: '더 가까이 가져가 봐요', tone: 'warn', cls: '', long: '거리가 멀어서 전기력이 아주 약해요. 막대를 더 가까이 가져가 보세요.' };
+  if (E2.F > 0) return { short: '척력 · 서로 밀어내요', tone: 'pos', cls: 'rep', long: '두 막대가 <b>같은 종류</b>의 전하를 띠어서 서로 밀어내요.' };
+  if (E2.qh && E2.qd) return { short: '인력 · 서로 끌어당겨요', tone: 'ok', cls: 'att', long: '두 막대가 <b>다른 종류</b>의 전하를 띠어서 서로 끌어당겨요.' };
+  return { short: '인력 · 끌려와요', tone: 'ok', cls: 'att', long: '대전되지 않은 막대도 대전체 가까이에서는 가까운 쪽에 반대 전하가 모여서(정전기 유도) 끌려와요.' };
+}
+function e2Why(mat, rub, q) {
+  if (!q) return `${eul(nm(mat))} ${ro(nm(rub))} 문지름 · 같은 물질이라 대전 안 됨`;
+  return `${ro(nm(rub))} 문지름 · 전자를 ${q > 0 ? '잃음' : '얻음'}`;
+}
+function updateNotes2() {
+  const v = e2Verdict();
+  const vd = $('#v2'); vd.className = 'verdict ' + v.cls; setHTML(vd, v.short);
+  readout($('#r2a'), `매단 막대 · ${nm(E2.hangMat)}`, E2.qh, e2Why(E2.hangMat, E2.hangRub, E2.qh));
+  readout($('#r2b'), `손에 든 막대 · ${nm(E2.handMat)}`, E2.qd, e2Why(E2.handMat, E2.handRub, E2.qd));
+  setHTML($('#m2'), v.long + ' 거리를 바꾸면서 매달린 막대가 얼마나 움직이는지 비교해 보세요.');
+}
+function fillSelect(sel, list, val) {
+  sel.innerHTML = list.map(k => `<option value="${k}">${nm(k)}</option>`).join('');
+  sel.value = val;
+}
+fillSelect($('#hangMat'), RODS, E2.hangMat); fillSelect($('#hangRub'), SERIES, E2.hangRub);
+fillSelect($('#handMat'), RODS, E2.handMat); fillSelect($('#handRub'), SERIES, E2.handRub);
+['hangMat', 'hangRub', 'handMat', 'handRub'].forEach(id => $('#' + id).addEventListener('change', e => { E2[id] = e.target.value; e2Charges(); }));
+const PRESETS = {
+  same: ['plastic', 'fur', 'rubber', 'fur'],
+  diff: ['glass', 'silk', 'plastic', 'fur'],
+  neutral: ['wood', 'wood', 'plastic', 'fur'],
+};
+document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('click', () => {
+  const p = PRESETS[b.dataset.preset];
+  ['hangMat', 'hangRub', 'handMat', 'handRub'].forEach((id, i) => { E2[id] = p[i]; $('#' + id).value = p[i]; });
+  e2Charges();
+  e2Near();
+}));
+function e2Near() { const { cx, cy } = e2Geom(E2.th); E2.go = { x: Math.max(cx + HL / 2 + 55, 560), y: cy }; }
+$('#near2').addEventListener('click', e2Near);
+$('#far2').addEventListener('click', () => { E2.go = { x: 735, y: 380 }; });
+(() => {
+  const cv = S2.cv;
+  cv.addEventListener('pointerdown', e => { const p = S2.toLocal(e); E2.go = null; E2.drag = { ox: E2.hx - p.x, oy: E2.hy - p.y }; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e => {
+    if (!E2.drag) return;
+    const p = S2.toLocal(e);
+    const nx = clamp(p.x + E2.drag.ox, 300, 745), ny = clamp(p.y + E2.drag.oy, 110, 405);
+    if (!e2Overlap(E2.th, nx, E2.hy)) E2.hx = nx;
+    if (!e2Overlap(E2.th, E2.hx, ny)) E2.hy = ny;
+  });
+  const end = () => { E2.drag = null; };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  cv.addEventListener('keydown', e => {
+    const m = { ArrowLeft: [-12, 0], ArrowRight: [12, 0], ArrowUp: [0, -12], ArrowDown: [0, 12] }[e.key];
+    if (!m) return; e.preventDefault(); E2.go = null;
+    const nx = clamp(E2.hx + m[0], 300, 745), ny = clamp(E2.hy + m[1], 110, 405);
+    if (!e2Overlap(E2.th, nx, ny)) { E2.hx = nx; E2.hy = ny; }
+  });
+})();
+e2Charges();
+
+/* =========================================================
+   실험 3. 정전기 유도와 검전기
+   ========================================================= */
+const S3 = setupCanvas($('#c3'));
+const PLATE = { x: 400, y: 222 }, PIVOT3 = { x: 400, y: 360 }, TABLE3 = 470, RL = 200, RT = 34;
+const RY_MAX = PLATE.y - 12 - RL / 2;
+const E3 = { rodMat: 'plastic', rodRub: 'fur', q: 0, Q: 0, rx: 640, ry: 70, th: 0, om: 0, touched: false, groundT: 0, groundMsg: '', drag: null, go: null, sparks: [], last: '' };
+function e3Charge() { E3.q = rubCharge(E3.rodMat, E3.rodRub); }
+function e3Prox() {
+  const tip = E3.ry + RL / 2, gap = Math.max(0, PLATE.y - 12 - tip);
+  const d = Math.hypot(E3.rx - PLATE.x, gap);
+  return clamp(1 - d / 260, 0, 1) ** 2;
+}
+function e3State() {
+  const p = e3Prox(), I = E3.q * p * .55;
+  return { p, I, plate: .4 * E3.Q - I, leaf: .6 * E3.Q + I };
+}
+function e3Step(dt) {
+  if (E3.go) {
+    const k = Math.min(1, dt * 4.5);
+    E3.rx += (E3.go.x - E3.rx) * k; E3.ry += (E3.go.y - E3.ry) * k;
+    if (Math.hypot(E3.go.x - E3.rx, E3.go.y - E3.ry) < .6) { E3.rx = E3.go.x; E3.ry = E3.go.y; E3.go = null; }
+  }
+  E3.ry = Math.min(E3.ry, RY_MAX);
+  const touching = Math.abs(E3.rx - PLATE.x) < 62 && E3.ry >= RY_MAX - 1;
+  if (touching && !E3.touched && Math.abs(E3.q) > .2) {
+    const amt = E3.q * .45; E3.Q += amt; E3.q -= amt;
+    E3.sparks.push({ x: E3.rx, y: PLATE.y - 12, t: 0 });
+    E3.last = 'touch';
+  }
+  if (E3.ry < RY_MAX - 6) E3.touched = false; else if (touching) E3.touched = true;
+  const s = e3State();
+  const target = Math.min(.8, Math.abs(s.leaf) * .13);
+  const k = dt * 60;
+  E3.om += (target - E3.th) * .06 * k; E3.om *= Math.pow(.84, k); E3.th = Math.max(0, E3.th + E3.om * k);
+  if (E3.groundT > 0) E3.groundT -= dt;
+  for (const sp of E3.sparks) sp.t += dt / .55;
+  E3.sparks = E3.sparks.filter(sp => sp.t < 1);
+}
+function drawLeaf(ctx, x, y, ang) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  const g = ctx.createLinearGradient(-7, 0, 7, 0);
+  g.addColorStop(0, '#E9B830'); g.addColorStop(.5, '#FFF0A6'); g.addColorStop(1, '#D29D1A');
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.quadraticCurveTo(8, 40, 6, 80); ctx.quadraticCurveTo(0, 87, -6, 80); ctx.quadraticCurveTo(-8, 40, -6, 0); ctx.fill();
+  ctx.strokeStyle = 'rgba(160,110,15,.6)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.moveTo(-3, 18); ctx.lineTo(3, 26); ctx.moveTo(-4, 50); ctx.lineTo(2, 56); ctx.stroke();
+  ctx.restore();
+}
+function e3Draw() {
+  const ctx = S3.ctx; S3.begin();
+  drawRoom(ctx, TABLE3);
+  const s = e3State();
+  const jx = 282, jy = 290, jw = 236, jh = TABLE3 - jy - 2;
+  // 유리병 (뒤)
+  ctx.save();
+  ctx.fillStyle = 'rgba(30,42,71,.08)'; rr(ctx, jx + 4, jy + 8, jw, jh, 36); ctx.fill();
+  const gg = ctx.createLinearGradient(jx, 0, jx + jw, 0);
+  gg.addColorStop(0, 'rgba(190,226,244,.7)'); gg.addColorStop(.5, 'rgba(236,248,253,.55)'); gg.addColorStop(1, 'rgba(170,212,234,.75)');
+  ctx.fillStyle = gg; rr(ctx, jx, jy, jw, jh, 36); ctx.fill();
+  ctx.fillStyle = gg; rr(ctx, 362, 266, 76, 30, 6); ctx.fill();
+  ctx.restore();
+  // 금속 막대
+  const mg = ctx.createLinearGradient(395, 0, 405, 0); mg.addColorStop(0, '#8E96A3'); mg.addColorStop(.5, '#EEF1F5'); mg.addColorStop(1, '#7F8796');
+  ctx.fillStyle = mg; ctx.fillRect(396, PLATE.y, 8, PIVOT3.y - PLATE.y + 4);
+  // 금속박
+  drawLeaf(ctx, PIVOT3.x - 3, PIVOT3.y, E3.th);
+  drawLeaf(ctx, PIVOT3.x + 3, PIVOT3.y, -E3.th);
+  // 마개
+  ctx.save();
+  const cg = ctx.createLinearGradient(0, 248, 0, 288); cg.addColorStop(0, '#8A6550'); cg.addColorStop(1, '#5E4334');
+  ctx.fillStyle = cg; ctx.beginPath(); ctx.moveTo(366, 250); ctx.lineTo(434, 250); ctx.lineTo(427, 288); ctx.lineTo(373, 288); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(370, 254, 60, 5);
+  ctx.restore();
+  ctx.fillStyle = mg; ctx.fillRect(396, PLATE.y, 8, 30);
+  // 금속판
+  ctx.save();
+  const pg = ctx.createLinearGradient(PLATE.x - 62, 0, PLATE.x + 62, 0);
+  pg.addColorStop(0, '#8D95A3'); pg.addColorStop(.35, '#F1F3F7'); pg.addColorStop(.7, '#B7BEC9'); pg.addColorStop(1, '#7C8494');
+  ctx.fillStyle = '#6E7685'; ctx.beginPath(); ctx.ellipse(PLATE.x, PLATE.y + 2, 62, 13, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = pg; ctx.fillRect(PLATE.x - 62, PLATE.y - 6, 124, 8);
+  ctx.beginPath(); ctx.ellipse(PLATE.x, PLATE.y - 6, 62, 13, 0, 0, 7); ctx.fill();
+  ctx.strokeStyle = 'rgba(80,88,104,.6)'; ctx.lineWidth = 1.2; ctx.stroke();
+  ctx.restore();
+  // 유리병 (앞 광택)
+  ctx.save();
+  rr(ctx, jx, jy, jw, jh, 36); ctx.strokeStyle = 'rgba(80,140,180,.85)'; ctx.lineWidth = 2.2; ctx.stroke();
+  rr(ctx, 362, 266, 76, 30, 6); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.6)'; rr(ctx, jx + 16, jy + 22, 10, jh - 60, 5); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.35)'; rr(ctx, jx + jw - 26, jy + 30, 6, jh - 90, 3); ctx.fill();
+  ctx.restore();
+  // 전하 표시
+  const np = Math.min(6, Math.round(Math.abs(s.plate)));
+  if (np) marksAlong(ctx, PLATE.x - 44, PLATE.y - 8, PLATE.x + 44, PLATE.y - 8, np, Math.sign(s.plate), 7);
+  const nl = Math.min(6, Math.round(Math.abs(s.leaf)));
+  if (nl) {
+    const left = Math.ceil(nl / 2), right = nl - left;
+    const put = (x, ang, n) => { for (let i = 0; i < n; i++) { const d = 24 + i * 22; drawCharge(ctx, x - Math.sin(ang) * d, PIVOT3.y + Math.cos(ang) * d, Math.sign(s.leaf), 6.5); } };
+    put(PIVOT3.x - 3, E3.th, left); put(PIVOT3.x + 3, -E3.th, right);
+  }
+  pill(ctx, 400, TABLE3 + 15, '검전기', 'none', 15);
+  // 접지 손가락
+  if (E3.groundT > 0) {
+    const a = Math.min(1, E3.groundT * 2);
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.fillStyle = '#8FD5C2'; ctx.strokeStyle = '#5BB59E'; ctx.lineWidth = 2;
+    rr(ctx, 150, 200, 112, 44, 16); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#FFD9BE'; ctx.strokeStyle = '#E3A47E';
+    ctx.beginPath(); ctx.ellipse(282, 222, 26, 21, 0, 0, 7); ctx.fill(); ctx.stroke();
+    rr(ctx, 290, 213, 50, 17, 8.5); ctx.fillStyle = '#FFDFC8'; ctx.fill(); ctx.stroke();
+    ctx.restore();
+    if (E3.groundMsg) pill(ctx, 220, 172, E3.groundMsg, 'warn', 15);
+  }
+  // 대전체 막대 (세로)
+  ctx.save(); ctx.translate(E3.rx, E3.ry); ctx.rotate(Math.PI / 2);
+  drawHandBack(ctx, -RL / 2 + 40, 0, RT);
+  drawRod(ctx, E3.rodMat, 0, 0, RL, RT, 0);
+  drawHandFront(ctx, -RL / 2 + 40, 0, RT);
+  ctx.restore();
+  const nr = Math.min(8, Math.round(Math.abs(E3.q)));
+  if (nr) marksAlong(ctx, E3.rx, E3.ry + RL / 2 - 14, E3.rx, E3.ry - 8, nr, Math.sign(E3.q), 7.5);
+  pill(ctx, E3.rx + (E3.rx > 560 ? -100 : 100), E3.ry + 60, `${nm(E3.rodMat)} 막대 · ${signWord(E3.q)}`, toneOf(E3.q), 15);
+  for (const sp of E3.sparks) drawSpark(ctx, sp.x, sp.y, 6 + 20 * sp.t, 1 - sp.t);
+  const open = E3.th > .06;
+  pill(ctx, 640, 420, open ? '금속박이 벌어졌어요' : '금속박이 닫혀 있어요', open ? 'warn' : 'none', 16);
+}
+function updateNotes3() {
+  const s = e3State();
+  readout($('#r3a'), `대전체 · ${nm(E3.rodMat)}`, E3.q, Math.abs(E3.q) < .3 ? '대전되지 않음' : (s.p > .05 ? '금속판 가까이 있음' : '멀리 있음'));
+  readout($('#r3b'), '금속판', s.plate, '');
+  readout($('#r3c'), '금속박', s.leaf, E3.th > .06 ? '벌어짐' : '닫힘');
+  const neg = E3.q < 0;
+  let m;
+  if (Math.abs(E3.q) < .3 && Math.abs(E3.Q) < .3) {
+    m = `${eul(nm(E3.rodMat))} ${ro(nm(E3.rodRub))} 문질러서 대전되지 않았어요. 대전되지 않은 물체를 가까이 하면 금속박이 움직이지 않아요. 다른 재료를 골라 보세요.`;
+  } else if (Math.abs(E3.Q) < .3) {
+    if (s.p < .04) m = '대전체를 금속판에 천천히 가까이 가져가 보세요. 금속박이 어떻게 변하는지 관찰해요.';
+    else m = neg
+      ? '정전기 유도: (−)대전체가 가까이 오면 금속 속 자유 전자가 밀려나 금속박 쪽으로 내려가요. 금속판은 <span class="pos-t">(+)</span>, 금속박은 <span class="neg-t">(−)</span>를 띠고, 같은 전하끼리 밀어내서 금속박이 벌어져요. 가까울수록 더 많이 벌어져요.'
+      : '정전기 유도: (+)대전체가 가까이 오면 금속 속 자유 전자가 금속판 쪽으로 끌려 올라가요. 금속판은 <span class="neg-t">(−)</span>, 금속박은 <span class="pos-t">(+)</span>를 띠고, 같은 전하끼리 밀어내서 금속박이 벌어져요.';
+  } else {
+    const qs = E3.Q > 0 ? '(+)' : '(−)';
+    m = `지금 검전기 전체가 ${qs}전하를 띠고 있어요. `;
+    m += E3.last === 'touch'
+      ? '대전체를 접촉시키면 전하가 검전기로 옮겨 가서 대전체를 치워도 금속박이 벌어진 채로 남아요.'
+      : '손가락을 떼고 대전체를 치워도 전하가 남아 금속박이 벌어져 있어요.';
+    m += ' 멀리 치운 뒤 <b>손가락 대기</b>를 누르면 전하가 빠져나가 금속박이 닫혀요.';
+  }
+  setHTML($('#m3'), m);
+}
+fillSelect($('#rodMat'), RODS, E3.rodMat); fillSelect($('#rodRub'), SERIES, E3.rodRub);
+['rodMat', 'rodRub'].forEach(id => $('#' + id).addEventListener('change', e => { E3[id] = e.target.value; e3Charge(); }));
+$('#near3').addEventListener('click', () => { E3.go = { x: 400, y: RY_MAX - 52 }; });
+$('#touch3').addEventListener('click', () => { E3.go = { x: 400, y: RY_MAX }; });
+$('#far3').addEventListener('click', () => { E3.go = { x: 640, y: 40 }; });
+$('#ground3').addEventListener('click', () => {
+  const s = e3State();
+  const before = E3.Q, after = -s.I / .6;
+  E3.Q = Math.abs(after) < .05 ? 0 : after;
+  E3.groundT = 1.6; E3.last = 'ground';
+  const dq = E3.Q - before;
+  E3.groundMsg = Math.abs(dq) < .2 ? '이동할 전하가 없어요' : dq > 0 ? '전자가 손으로 빠져나가요' : '전자가 손에서 들어와요';
+});
+$('#reset3').addEventListener('click', () => { E3.Q = 0; e3Charge(); E3.go = { x: 640, y: 70 }; E3.last = ''; });
+(() => {
+  const cv = S3.cv;
+  cv.addEventListener('pointerdown', e => { const p = S3.toLocal(e); E3.go = null; E3.drag = { ox: E3.rx - p.x, oy: E3.ry - p.y }; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e => {
+    if (!E3.drag) return;
+    const p = S3.toLocal(e);
+    E3.rx = clamp(p.x + E3.drag.ox, 120, 690); E3.ry = clamp(p.y + E3.drag.oy, 20, RY_MAX);
+  });
+  const end = () => { E3.drag = null; };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  cv.addEventListener('keydown', e => {
+    const m = { ArrowLeft: [-12, 0], ArrowRight: [12, 0], ArrowUp: [0, -12], ArrowDown: [0, 12] }[e.key];
+    if (!m) return; e.preventDefault(); E3.go = null;
+    E3.rx = clamp(E3.rx + m[0], 120, 690); E3.ry = clamp(E3.ry + m[1], 20, RY_MAX);
+  });
+})();
+e3Charge();
+
+/* =========================================================
+   퀴즈
+   ========================================================= */
+const SER_TXT = '대전열: (+) 털가죽 – 유리 – 명주 – 나무 – 고무 – 플라스틱 (−)';
+const QUIZ = [
+  { q: '두 물체를 서로 문지를 때, 한 물체에서 다른 물체로 이동하는 것은?', o: ['원자핵', '전자', '양(+)전하', '공기 분자'], a: 1,
+    e: '문지르면 원자핵에 약하게 묶여 있는 전자가 이동해요. 원자핵(양전하)은 움직이지 않아요.' },
+  { q: '유리 막대를 명주 헝겊으로 문지르면 유리 막대가 띠는 전하는?', s: 1, o: ['(+)전하', '(−)전하', '전하를 띠지 않는다', '(+)와 (−)를 번갈아 띤다'], a: 0,
+    e: '대전열에서 유리가 명주보다 (+)쪽에 있어서 유리가 전자를 잃어요. 그래서 유리 막대는 (+)전하를 띠어요.' },
+  { q: '고무 막대를 털가죽으로 문지를 때 전자의 이동 방향으로 옳은 것은?', s: 1, o: ['털가죽 → 고무 막대', '고무 막대 → 털가죽', '양쪽으로 같은 수만큼 이동한다', '이동하지 않는다'], a: 0,
+    e: '털가죽이 대전열의 맨 (+)쪽에 있어서 전자를 잃기 쉬워요. 전자는 털가죽에서 고무 막대로 이동해 고무 막대는 (−)전하를 띠어요.' },
+  { q: '서로 다른 두 물체를 문지른 뒤, 두 물체가 띠는 전하에 대한 설명으로 옳은 것은?', o: ['두 물체 모두 (+)전하를 띤다', '두 물체 모두 (−)전하를 띤다', '전하의 종류는 서로 다르고 양은 같다', '전하의 종류는 같고 양은 다르다'], a: 2,
+    e: '한 물체가 잃은 전자를 다른 물체가 그대로 얻어요. 그래서 전하의 양은 같고 종류는 반대예요.' },
+  { q: '같은 물질로 만든 플라스틱 막대 두 개를 서로 문지르면 어떻게 될까?', o: ['둘 다 (−)전하를 띤다', '둘 다 (+)전하를 띤다', '거의 대전되지 않는다', '하나는 (+), 하나는 (−)전하를 띤다'], a: 2,
+    e: '같은 물질은 전자를 끌어당기는 정도가 같아서 전자가 거의 이동하지 않아요.' },
+  { q: '털가죽으로 문지른 플라스틱 막대 두 개를 가까이 가져가면 어떻게 될까?', s: 1, o: ['서로 끌어당긴다', '서로 밀어낸다', '아무 힘도 작용하지 않는다', '한쪽 막대만 중성이 된다'], a: 1,
+    e: '두 막대 모두 (−)전하로 같은 종류예요. 같은 종류의 전하끼리는 밀어내는 힘(척력)이 작용해요.' },
+  { q: '명주로 문지른 유리 막대를 명주실에 매달고, 털가죽으로 문지른 고무 막대를 가까이 가져갔다. 유리 막대는 어떻게 움직일까?', s: 1, o: ['고무 막대 쪽으로 끌려온다', '고무 막대에서 멀어진다', '전혀 움직이지 않는다', '제자리에서 빙글빙글 돈다'], a: 0,
+    e: '유리 막대는 (+)전하, 고무 막대는 (−)전하로 종류가 달라요. 다른 종류의 전하끼리는 끌어당기는 힘(인력)이 작용해요.' },
+  { q: '전기력의 크기에 대한 설명으로 옳은 것은?', o: ['두 물체 사이의 거리가 멀수록 커진다', '두 물체 사이의 거리가 가까울수록 커진다', '거리와 관계없이 항상 같다', '전하의 양이 적을수록 커진다'], a: 1,
+    e: '전기력은 두 물체가 가까울수록, 전하의 양이 많을수록 커져요.' },
+  { q: '(−)전하를 띤 막대를 검전기의 금속판에 닿지 않게 가까이 가져갔다. 금속판과 금속박이 띠는 전하를 바르게 짝지은 것은?', o: ['금속판 (−), 금속박 (−)', '금속판 (+), 금속박 (−)', '금속판 (−), 금속박 (+)', '금속판 (+), 금속박 (+)'], a: 1,
+    e: '정전기 유도 때문에 금속 속 자유 전자가 (−)막대에 밀려 금속박 쪽으로 내려가요. 금속판은 (+), 금속박은 (−)를 띠고 금속박이 벌어져요.' },
+  { q: '다음 중 마찰 전기(정전기)와 관련이 없는 현상은?', o: ['겨울에 스웨터를 벗을 때 따닥 소리가 난다', '플라스틱 빗으로 머리를 빗으면 머리카락이 빗에 달라붙는다', '자석이 철로 된 클립을 끌어당긴다', '먼지떨이로 먼지를 털면 먼지가 먼지떨이에 달라붙는다'], a: 2,
+    e: '자석이 클립을 끌어당기는 힘은 전기력이 아니라 자기력이에요.' },
+];
+const QZ = { i: 0, score: 0, picked: [] };
+const LT = ['①', '②', '③', '④'];
+const mini = cls => `<svg class="${cls}" viewBox="0 0 120 120" aria-hidden="true"><use href="#jjiri"/></svg>`;
+function qProgress() {
+  const done = QZ.picked.length;
+  $('#qprog').textContent = `${Math.min(QZ.i + 1, QUIZ.length)} / ${QUIZ.length}`;
+  $('#qfill').style.width = (done / QUIZ.length * 100) + '%';
+  $('#qscore').textContent = `맞힌 문제 ${QZ.score}`;
+}
+function renderQ() {
+  qProgress();
+  const card = $('#qcard');
+  if (QZ.i >= QUIZ.length) return renderResult();
+  const it = QUIZ[QZ.i];
+  card.innerHTML = `<span class="qno">${QZ.i + 1}번</span>
+    <h2 class="qtext">${it.q}</h2>
+    ${it.s ? `<div class="qseries">${SER_TXT}</div>` : ''}
+    <div class="opts">${it.o.map((o, j) => `<button class="opt" type="button" data-j="${j}"><span class="lt">${LT[j]}</span><span>${o}</span></button>`).join('')}</div>
+    <div id="qfb"></div>`;
+  card.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => answer(+b.dataset.j)));
+}
+function answer(j) {
+  const it = QUIZ[QZ.i], ok = j === it.a;
+  if (QZ.picked.length > QZ.i) return;
+  QZ.picked.push(j); if (ok) QZ.score++;
+  const card = $('#qcard');
+  card.querySelectorAll('.opt').forEach(b => {
+    const k = +b.dataset.j; b.disabled = true;
+    if (k === it.a) b.classList.add('right'); else if (k === j) b.classList.add('wrong');
+  });
+  const last = QZ.i === QUIZ.length - 1;
+  $('#qfb').innerHTML = `<div class="fb ${ok ? 'good' : 'bad'}">${mini('')}<div><div class="t">${ok ? '정답이에요! 찌릿찌릿!' : `아쉬워요. 정답은 ${LT[it.a]}번`}</div><p>${it.e}</p></div></div>
+    <div class="qnav"><button class="btn" type="button" id="qnext">${last ? '결과 보기' : '다음 문제'}</button></div>`;
+  $('#qnext').addEventListener('click', () => { QZ.i++; renderQ(); $('#qcard').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); });
+  $('#qnext').focus({ preventScroll: true });
+  qProgress();
+}
+function renderResult() {
+  const n = QUIZ.length, sc = QZ.score;
+  const stars = sc >= 9 ? 3 : sc >= 6 ? 2 : sc >= 3 ? 1 : 0;
+  const msg = sc === n ? '만점! 정전기 박사로 인정할게요.' : sc >= 8 ? '거의 다 맞혔어요. 틀린 문제만 다시 살펴봐요.' : sc >= 5 ? '좋아요! 실험실에서 한 번 더 문질러 보면 더 확실해질 거예요.' : '괜찮아요. 실험 1부터 차근차근 다시 해 보고 도전해요!';
+  const wrong = QUIZ.map((it, i) => ({ it, i, p: QZ.picked[i] })).filter(x => x.p !== x.it.a);
+  $('#qcard').innerHTML = `<div class="result">${mini('')}
+    <div class="score">${sc}<small> / ${n}</small></div>
+    <div class="stars" aria-label="별 ${stars}개">${[0, 1, 2].map(k => `<span class="${k < stars ? '' : 'off'}">★</span>`).join('')}</div>
+    <p class="msg">${msg}</p>
+    ${wrong.length ? `<div class="review">${wrong.map(x => `<div>${x.i + 1}번. ${x.it.q}<br>정답: <b>${LT[x.it.a]} ${x.it.o[x.it.a]}</b></div>`).join('')}</div>` : ''}
+    <div class="btns" style="justify-content:center;margin-top:8px"><button class="btn sun" type="button" id="qretry">다시 풀기</button><button class="btn alt" type="button" id="qlab">실험실로 돌아가기</button></div></div>`;
+  $('#qretry').addEventListener('click', () => { QZ.i = 0; QZ.score = 0; QZ.picked = []; renderQ(); });
+  $('#qlab').addEventListener('click', () => selectTab('rub'));
+}
+renderQ();
+
+/* ---------- 탭 ---------- */
+const TIPS = {
+  rub: '안녕! 나는 전자 <b>찌릿이</b>야. 두 물체를 문지르면 내가 옆 물체로 이사를 가. 누가 나를 데려가는지 지켜봐!',
+  force: '같은 전하끼리는 <b>밀어내고</b>, 다른 전하끼리는 <b>끌어당겨</b>. 명주실에 매단 막대가 어느 쪽으로 움직이는지 봐!',
+  scope: '금속 속에는 자유롭게 움직이는 전자 친구들이 있어. 대전체가 다가오면 우리가 <b>우르르</b> 이동해!',
+  quiz: '실험에서 본 걸 떠올리면서 풀어 봐. 틀려도 <b>해설</b>을 보면 금방 알 수 있어!',
+};
+const TABS = ['rub', 'force', 'scope', 'quiz'];
+let active = 'rub';
+function selectTab(id) {
+  if (!TABS.includes(id)) id = 'rub';
+  active = id;
+  TABS.forEach(t => { $('#t-' + t).setAttribute('aria-selected', String(t === id)); $('#' + t).hidden = t !== id; });
+  $('#tip').innerHTML = TIPS[id];
+}
+TABS.forEach(t => $('#t-' + t).addEventListener('click', () => selectTab(t)));
+$('.tabs').addEventListener('keydown', e => {
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+  const i = (TABS.indexOf(active) + (e.key === 'ArrowRight' ? 1 : TABS.length - 1)) % TABS.length;
+  selectTab(TABS[i]); $('#t-' + TABS[i]).focus();
+});
+selectTab(location.hash.slice(1) || 'rub');
+
+/* ---------- 반복 ---------- */
+let last = performance.now(), noteTick = 0;
+function loop(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
+  if (active === 'rub') { e1Step(dt); e1Draw(); }
+  else if (active === 'force') { e2Step(dt); e2Draw(); if ((noteTick += dt) > .1) { noteTick = 0; updateNotes2(); } }
+  else if (active === 'scope') { e3Step(dt); e3Draw(); if ((noteTick += dt) > .1) { noteTick = 0; updateNotes3(); } }
+  requestAnimationFrame(loop);
+}
+updateNotes2(); updateNotes3();
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
